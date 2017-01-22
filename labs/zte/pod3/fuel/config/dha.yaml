@@ -1,0 +1,59 @@
+##############################################################################
+### Copyright (c) 2016 ZTE Corporation
+### zhang.jun3g@zte.com.cn
+### All rights reserved. This program and the accompanying materials
+### are made available under the terms of the Apache License, Version 2.0
+### which accompanies this distribution, and is available at
+### http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+
+dha-pod-config-metadata:
+  title: Deployment Hardware Adapter (DHA) for ZTE POD3
+  version: 0.1
+  created: Jul 16 2016
+  comment: Default Fuel9 version
+
+# Adapter to use for this definition
+adapter: zte
+
+# Node list.
+# Mandatory property is id, all other properties are adapter specific.
+
+nodes:
+- id: 1
+  pxeMac: 74:4a:a4:00:0b:85
+  ipmiIp: 192.168.1.32
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 2
+  pxeMac: 74:4a:a4:00:5c:5d
+  ipmiIp: 192.168.1.33
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 3
+  pxeMac: 74:4a:a4:00:5c:35
+  ipmiIp: 192.168.1.34
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 4
+  pxeMac: 74:4a:a4:00:5c:69
+  ipmiIp: 192.168.1.35
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 5
+  pxeMac: 74:4a:a4:00:5c:6d
+  ipmiIp: 192.168.1.36
+  ipmiUser: zteroot
+  ipmiPass: superuser
+
+# Adding the Fuel node as node id 7 which may not be correct - please
+# adjust as needed.
+- id: 7
+  libvirtName: fuel-opnfv-pod3
+  libvirtTemplate: templates/hardware_environment/vms/fuel.xml
+  isFuel: yes
+  username: root
+  password: r00tme
+
+disks:
+  fuel: 100G

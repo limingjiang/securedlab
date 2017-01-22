@@ -1,0 +1,51 @@
+dha-pod-config-metadata:
+  title: Deployment Hardware Adapter (DHA) for fuel development pipeline - default version
+  version: 0.0.1
+  created: Aug 24 2016
+  comment: Default Fuel9 version
+
+# Adapter to use for this definition
+adapter: ipmi 
+
+# Node list.
+# Mandatory property is id, all other properties are adapter specific.
+
+nodes:
+- id: 1
+  pxeMac: E8:4D:D0:BA:63:95
+  ipmiIp: 172.16.131.11
+  ipmiUser: root
+  ipmiPass: Huawei@123
+- id: 2
+  pxeMac: E8:4D:D0:BA:63:51
+  ipmiIp: 172.16.131.12
+  ipmiUser: root
+  ipmiPass: Huawei@123
+- id: 3
+  pxeMac: E8:4D:D0:BA:64:45
+  ipmiIp: 172.16.131.13
+  ipmiUser: root
+  ipmiPass: Huawei@123
+- id: 4
+  pxeMac: E8:4D:D0:BA:63:81
+  ipmiIp: 172.16.131.14
+  ipmiUser: root
+  ipmiPass: Huawei@123
+- id: 5
+  pxeMac: E8:4D:D0:BA:5F:B5
+  ipmiIp: 172.16.131.15
+  ipmiUser: root
+  ipmiPass: Huawei@123
+
+
+# Adding the Fuel node as node id 6 which may not be correct - please
+# adjust as needed.
+- id: 6
+  libvirtName: fuel-opnfv-1
+  libvirtTemplate: templates/hardware_environment/vms/ericsson_montreal_lab/fuel.xml
+  isFuel: yes
+  username: root
+  password: r00tme
+
+disks:
+  fuel: 100G

@@ -1,0 +1,51 @@
+dha-pod-config-metadata:
+  title: Deployment Hardware Adapter (DHA) for fuel development pipeline - default version
+  version: 0.0.3
+  created: Feb 1 2016
+  comment: Default Fuel8 version
+
+# Adapter to use for this definition
+adapter: zte
+
+# Node list.
+# Mandatory property is id, all other properties are adapter specific.
+
+nodes:
+- id: 1
+  pxeMac: 74:4A:A4:00:CD:72
+  ipmiIp: 192.168.1.106
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 2
+  pxeMac: 74:4A:A4:00:CA:CC
+  ipmiIp: 192.168.1.107
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 3
+  pxeMac: 74:4A:A4:00:CD:12
+  ipmiIp: 192.168.1.108
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 4
+  pxeMac: 74:4A:A4:00:CF:40
+  ipmiIp: 192.168.1.109
+  ipmiUser: zteroot
+  ipmiPass: superuser
+- id: 5
+  pxeMac: 74:4A:A4:00:CE:D4
+  ipmiIp: 192.168.1.110
+  ipmiUser: zteroot
+  ipmiPass: superuser
+
+
+# Adding the Fuel node as node id 7 which may not be correct - please
+# adjust as needed.
+- id: 7
+  libvirtName: fuel-opnfv-2
+  libvirtTemplate: templates/hardware_environment/vms/fuel.xml
+  isFuel: yes
+  username: root
+  password: r00tme
+
+disks:
+  fuel: 100G

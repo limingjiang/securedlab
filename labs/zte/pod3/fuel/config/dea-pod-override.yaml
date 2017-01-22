@@ -1,0 +1,356 @@
+##############################################################################
+## Copyright (c) 2016 ZTE Corporation
+## zhang.jun3g@zte.com.cn
+## All rights reserved. This program and the accompanying materials
+## are made available under the terms of the Apache License, Version 2.0
+## which accompanies this distribution, and is available at
+## http://www.apache.org/licenses/LICENSE-2.0
+###############################################################################
+
+dea-pod-override-config-metadata:
+  title: 'Deployment Environment Adapter for ZTE-POD3'
+  version: '0.1'
+  created: 'Jul 16 2016'
+  comment: 'Rebased for Fuel 9'
+environment:
+  name: zte-pod3
+  net_segment_type: vlan
+interfaces_1:
+  enp2s0f0:
+  - fuelweb_admin
+  enp2s0f1:
+  - management
+  enp132s0f0:
+  - storage
+  enp132s0f1:
+  - private
+  - public
+transformations_1:
+  transformations:
+  - action: add-br
+    name: br-fw-admin
+  - action: add-br
+    name: br-mgmt
+  - action: add-br
+    name: br-storage
+  - action: add-br
+    name: br-ex
+  - action: add-br
+    name: br-floating
+    provider: ovs
+  - action: add-patch
+    bridges:
+    - br-floating
+    - br-ex
+    mtu: 65000
+    provider: ovs
+  - action: add-br
+    name: br-prv
+    provider: ovs
+  - action: add-br
+    name: br-aux
+  - action: add-patch
+    bridges:
+    - br-prv
+    - br-aux
+    mtu: 65000
+    provider: ovs
+  - action: add-port
+    bridge: br-storage
+    name: enp132s0f0.102
+  - action: add-port
+    bridge: br-aux
+    name: enp132s0f1
+  - action: add-port
+    bridge: br-ex
+    name: enp132s0f1.103
+  - action: add-port
+    bridge: br-fw-admin
+    name: enp2s0f0
+  - action: add-port
+    bridge: br-mgmt
+    name: enp2s0f1.101
+fuel:
+  ADMIN_NETWORK:
+    dhcp_pool_end: 10.20.0.200
+    dhcp_pool_start: 10.20.0.10
+    ipaddress: 10.20.0.2
+    netmask: 255.255.255.0
+  DNS_DOMAIN: zte.com.cn
+  DNS_SEARCH: zte.com.cn
+  DNS_UPSTREAM: 172.10.0.1
+  HOSTNAME: fuel
+  NTP1: 172.10.0.1
+  NTP2: ''
+  NTP3: ''
+network:
+  management_vip: 192.168.11.2
+  management_vrouter_vip: 192.168.11.1
+  networking_parameters:
+    base_mac: fa:16:3e:00:00:00
+    configuration_template: null
+    dns_nameservers:
+    - 172.10.0.1
+    floating_name: admin_floating_net
+    floating_ranges:
+    - - 172.10.0.130
+      - 172.10.0.230
+    gre_id_range:
+    - 2
+    - 65535
+    internal_cidr: 192.168.111.0/24
+    internal_gateway: 192.168.111.1
+    internal_name: admin_internal_net
+    net_l23_provider: ovs
+    segmentation_type: vlan
+    vlan_range:
+    - 1000
+    - 1030
+  networks:
+  - cidr: 172.10.0.0/24
+    gateway: 172.10.0.1
+    group_id: 4
+    id: 14
+    ip_ranges:
+    - - 172.10.0.10
+      - 172.10.0.126
+    name: public
+    vlan_start: 103
+  - cidr: 192.168.12.0/24
+    gateway: null
+    group_id: 4
+    id: 16
+    ip_ranges:
+    - - 192.168.12.1
+      - 192.168.12.254
+    name: storage
+    vlan_start: 102
+  - cidr: 192.168.11.0/24
+    gateway: null
+    group_id: 4
+    id: 15
+    ip_ranges:
+    - - 192.168.11.1
+      - 192.168.11.254
+    name: management
+    vlan_start: 101
+  - cidr: null
+    gateway: null
+    group_id: 4
+    id: 17
+    ip_ranges: []
+    name: private
+    vlan_start: null
+  - cidr: 10.20.0.0/24
+    gateway: 10.20.0.2
+    group_id: null
+    id: 1
+    ip_ranges:
+    - - 10.20.0.10
+      - 10.20.0.200
+    name: fuelweb_admin
+    vlan_start: null
+  public_vip: 172.10.0.11
+  public_vrouter_vip: 172.10.0.10
+  vips:
+    management:
+      ipaddr: 192.168.11.2
+      is_user_defined: false
+      namespace: haproxy
+      network_role: mgmt/vip
+      node_roles:
+      - controller
+      - primary-controller
+      vendor_specific: null
+    public:
+      ipaddr: 172.10.0.11
+      is_user_defined: false
+      namespace: haproxy
+      network_role: public/vip
+      node_roles:
+      - controller
+      - primary-controller
+      vendor_specific: null
+    vrouter:
+      ipaddr: 192.168.11.1
+      is_user_defined: false
+      namespace: vrouter
+      network_role: mgmt/vip
+      node_roles:
+      - controller
+      - primary-controller
+      vendor_specific: null
+    vrouter_pub:
+      ipaddr: 172.10.0.10
+      is_user_defined: false
+      namespace: vrouter
+      network_role: public/vip
+      node_roles:
+      - controller
+      - primary-controller
+      vendor_specific:
+        iptables_rules:
+          ns_start:
+          - iptables -t nat -A POSTROUTING -o <%INT%> -j MASQUERADE
+          ns_stop:
+          - iptables -t nat -D POSTROUTING -o <%INT%> -j MASQUERADE
+settings:
+  editable:
+    additional_components:
+      ceilometer:
+        description: If selected, Ceilometer and Aodh components will be installed
+        label: Install Ceilometer and Aodh
+        type: checkbox
+        value: true
+        weight: 60
+    common:
+      debug:
+        description: Debug logging mode provides more information, but requires more
+          disk space.
+        group: logging
+        label: OpenStack debug logging
+        type: checkbox
+        value: true
+        weight: 20
+      libvirt_type:
+        group: compute
+        label: Hypervisor type
+        type: radio
+        value: kvm
+        values:
+        - data: kvm
+          description: Choose this type of hypervisor if you run OpenStack on hardware
+          label: KVM
+        - data: qemu
+          description: Choose this type of hypervisor if you run OpenStack on virtual
+            hosts.
+          label: QEMU
+        weight: 30
+    external_dns:
+      dns_list:
+        description: List of upstream DNS servers
+        label: DNS list
+        max: 3
+        regex:
+          error: Invalid IP address
+          source: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$
+        type: text_list
+        value:
+        - 172.10.0.1
+        weight: 10
+      metadata:
+        group: network
+        label: Host OS DNS Servers
+        weight: 30
+    external_ntp:
+      metadata:
+        group: network
+        label: Host OS NTP Servers
+        weight: 40
+      ntp_list:
+        description: List of upstream NTP servers
+        label: NTP server list
+        regex:
+          error: Invalid NTP server
+          source: ^[a-zA-Z\d]+[-\.\da-zA-Z]*$
+        type: text_list
+        value:
+        - 172.10.0.1
+        weight: 10
+    repo_setup:
+      metadata:
+        always_editable: true
+        group: general
+        label: Repositories
+        weight: 50
+      repos:
+        description: 'Please note: the first repository will be considered the operating
+          system mirror that will be used during node provisioning.
+
+          To create a local repository mirror on the Fuel master node, please follow
+          the instructions provided by running "fuel-createmirror --help" on the Fuel
+          master node.
+
+          Please make sure your Fuel master node has Internet access to the repository
+          before attempting to create a mirror.
+
+          '
+        extra_priority: null
+        type: custom_repo_configuration
+        value:
+        - name: ubuntu
+          priority: null
+          section: main universe multiverse
+          suite: trusty
+          type: deb
+          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+        - name: ubuntu-updates
+          priority: null
+          section: main universe multiverse
+          suite: trusty-updates
+          type: deb
+          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+        - name: ubuntu-security
+          priority: null
+          section: main universe multiverse
+          suite: trusty-security
+          type: deb
+          uri: http://10.20.0.2:8080/mirrors/ubuntu/
+        - name: mos
+          priority: 1050
+          section: main restricted
+          suite: mos9.0
+          type: deb
+          uri: http://10.20.0.2:8080/mitaka-9.0/ubuntu/x86_64
+        - name: mos-updates
+          priority: 1050
+          section: main restricted
+          suite: mos9.0-updates
+          type: deb
+          uri: http://10.20.0.202/mirrors/mos-repos/ubuntu/9.0/
+        - name: mos-security
+          priority: 1050
+          section: main restricted
+          suite: mos9.0-security
+          type: deb
+          uri: http://10.20.0.202/mirrors/mos-repos/ubuntu/9.0/
+        - name: mos-holdback
+          priority: 1100
+          section: main restricted
+          suite: mos9.0-holdback
+          type: deb
+          uri: http://10.20.0.202/mirrors/mos-repos/ubuntu/9.0/
+        - name: Auxiliary
+          priority: 1150
+          section: main restricted
+          suite: auxiliary
+          type: deb
+          uri: http://10.20.0.2:8080/mitaka-9.0/ubuntu/auxiliary
+    storage:
+      ephemeral_ceph:
+        description: Configures Nova to store ephemeral volumes in RBD. This works
+          best if Ceph is enabled for volumes and images, too. Enables live migration
+          of all types of Ceph backed VMs (without this option, live migration will
+          only work with VMs launched from Cinder volumes).
+        label: Ceph RBD for ephemeral volumes (Nova)
+        type: checkbox
+        value: true
+        weight: 75
+      volumes_ceph:
+        description: Configures Cinder to store volumes in Ceph RBD images.
+        label: Ceph RBD for volumes (Cinder)
+        restrictions:
+        - settings:storage.volumes_lvm.value == true or settings:storage.volumes_block_device.value
+          == true
+        type: checkbox
+        value: true
+        weight: 20
+      volumes_lvm:
+        description: It is recommended to have at least one Cinder node.
+        label: Cinder LVM over iSCSI for volumes
+        restrictions:
+        - settings:storage.volumes_ceph.value == true
+        type: checkbox
+        value: false
+        weight: 10
+

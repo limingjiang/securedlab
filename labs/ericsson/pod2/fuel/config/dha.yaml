@@ -1,0 +1,51 @@
+dha-pod-config-metadata:
+  title: Deployment Hardware Adapter (DHA) for Ericsson-1, POD-2
+# DHA API version supported
+  version: 0.0.3
+  created: Feb 1 2016
+  comment: Config for Ericsson Montreal Lab 1, POD2, Rebased for Fuel8
+
+# Adapter to use for this definition
+adapter: hp
+
+# Node list.
+# Mandatory properties are id and role.
+
+nodes:
+
+- id: 1
+  pxeMac: ec:b1:d7:a1:bd:68
+  ipmiIp: 10.118.120.235
+  ipmiUser: opnfv
+  ipmiPass: E///@work2
+- id: 2
+  pxeMac: ec:b1:d7:a2:44:a8
+  ipmiIp: 10.118.120.236
+  ipmiUser: opnfv
+  ipmiPass: E///@work2
+- id: 3
+  pxeMac: ec:b1:d7:a2:43:c8
+  ipmiIp: 10.118.120.237
+  ipmiUser: opnfv
+  ipmiPass: E///@work2
+- id: 4
+  pxeMac: ec:b1:d7:a2:44:88
+  ipmiIp: 10.118.120.238
+  ipmiUser: opnfv
+  ipmiPass: E///@work2
+- id: 5
+  pxeMac: ec:b1:d7:a1:8b:d8
+  ipmiIp: 10.118.120.239
+  ipmiUser: opnfv
+  ipmiPass: E///@work2
+- id: 6
+  libvirtName: fuel-opnfv
+  libvirtTemplate: templates/hardware_environment/vms/ericsson_montreal_lab/fuel.xml
+  isFuel: yes
+  username: root
+  password: r00tme
+
+disks:
+  compute: 100G
+  controller: 100G
+  fuel: 100G
